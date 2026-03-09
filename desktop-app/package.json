@@ -1,0 +1,55 @@
+{
+  "name": "minecraft-admin-panel",
+  "version": "1.0.0",
+  "description": "Minecraft Paper Sunucu Yönetim Masaüstü Uygulaması",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "minecraft",
+    "paper",
+    "admin",
+    "panel",
+    "electron"
+  ],
+  "author": "MCAdmin",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.0",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.mcadmin.panel",
+    "productName": "Minecraft Admin Panel",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icons/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/icon.png"
+    }
+  }
+}

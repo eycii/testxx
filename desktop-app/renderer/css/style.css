@@ -1,0 +1,664 @@
+/* ============================================================
+   MCAdmin Panel - Stil Dosyası
+   Koyu (dark) ve Açık (light) tema desteği ile modern tasarım
+   ============================================================ */
+
+/* ---- Genel Değişkenler ---- */
+:root {
+    --primary: #0d6efd;
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+
+    /* Koyu Tema (Varsayılan) */
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #1a1a2e;
+    --bg-card: #16213e;
+    --bg-sidebar: #0a0a14;
+    --text-primary: #e8e8f0;
+    --text-secondary: #9090a8;
+    --border-color: #2a2a42;
+    --hover-bg: #1e1e3a;
+    --log-bg: #080810;
+    --status-bar-bg: #121220;
+}
+
+/* Açık Tema */
+[data-theme="light"] {
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #f0f0f8;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --hover-bg: #e8e8f0;
+    --log-bg: #f0f0f8;
+    --status-bar-bg: #e8e8f0;
+}
+
+/* ---- Reset ve Genel ---- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* ---- Kaydırma Çubuğu Stili ---- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4a4a6a;
+}
+
+/* ---- Kart Bileşeni ---- */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-body {
+    color: var(--text-primary);
+}
+
+/* ---- Login Sayfası ---- */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 50%, #0f1a2e 100%);
+    overflow: auto;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+    padding: 20px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.minecraft-logo {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px rgba(25, 135, 84, 0.5));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.login-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #e8e8f0;
+    margin: 0;
+}
+
+.login-subtitle {
+    color: #9090a8;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.login-card {
+    background: rgba(22, 33, 62, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+}
+
+/* Login form inputs */
+.login-card .form-control,
+.login-card .form-select,
+.login-card .input-group-text {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e8e8f0;
+}
+
+.login-card .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(13, 110, 253, 0.8);
+    color: #e8e8f0;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.login-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.login-card .form-label {
+    color: #c0c0d8;
+    font-weight: 500;
+}
+
+.login-card .form-text {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.login-card .form-check-label {
+    color: #9090a8;
+}
+
+.status-message {
+    background: rgba(13, 110, 253, 0.1);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #74b0ff;
+}
+
+/* ---- Dashboard Sayfası ---- */
+.dashboard-page {
+    overflow: hidden;
+}
+
+/* Navigasyon */
+.navbar {
+    background-color: var(--status-bar-bg) !important;
+    border-bottom-color: var(--border-color) !important;
+    min-height: 56px;
+    padding: 0 16px;
+}
+
+/* ---- Kenar Çubuğu ---- */
+.sidebar {
+    width: 220px;
+    min-width: 220px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--bg-sidebar) !important;
+    border-right-color: var(--border-color) !important;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link {
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--hover-bg);
+}
+
+.sidebar .nav-link.active {
+    color: var(--primary);
+    background-color: rgba(13, 110, 253, 0.15);
+    font-weight: 600;
+}
+
+/* ---- Ana İçerik ---- */
+.main-content {
+    background-color: var(--bg-primary);
+    overflow-y: auto;
+}
+
+/* ---- Sekme İçerikleri ---- */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ---- İstatistik Kartları ---- */
+.stat-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.6;
+}
+
+/* ---- Oyuncu Listesi ---- */
+.player-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.player-item {
+    transition: background-color 0.15s ease;
+    border-bottom-color: var(--border-color) !important;
+}
+
+.player-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.player-item:last-child {
+    border-bottom: none !important;
+}
+
+.player-card {
+    transition: all 0.2s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: var(--primary);
+}
+
+/* ---- Bağlantı Durumu ---- */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.status-dot.connected {
+    background-color: #198754;
+    box-shadow: 0 0 8px rgba(25, 135, 84, 0.6);
+    animation: pulse-green 2s infinite;
+}
+
+.status-dot.disconnected {
+    background-color: #dc3545;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.6);
+}
+
+@keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 6px rgba(25, 135, 84, 0.4); }
+    50% { box-shadow: 0 0 12px rgba(25, 135, 84, 0.8); }
+}
+
+/* ---- Mute Listesi ---- */
+.mute-item {
+    border-bottom-color: var(--border-color) !important;
+    transition: background-color 0.15s ease;
+}
+
+.mute-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.mute-item:last-child {
+    border-bottom: none !important;
+}
+
+/* ---- Log Konsolu ---- */
+.log-console {
+    background-color: var(--log-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px;
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.log-entry {
+    padding: 1px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.log-time {
+    color: #6c757d;
+    margin-right: 4px;
+}
+
+.log-level {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.log-info .log-level { color: #0dcaf0; }
+.log-warning .log-level { color: #ffc107; }
+.log-error .log-level { color: #dc3545; }
+.log-message { color: var(--text-primary); }
+
+/* ---- Form Stilleri (Dashboard) ---- */
+.form-control,
+.form-select {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--bg-secondary);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary);
+}
+
+.input-group-text {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.form-text {
+    color: var(--text-secondary);
+}
+
+.form-check-label {
+    color: var(--text-secondary);
+}
+
+/* ---- Dropdown Stilleri ---- */
+.dropdown-menu-dark {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* ---- Buton Stilleri ---- */
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* ---- Badge Stilleri ---- */
+.badge {
+    font-weight: 600;
+}
+
+/* ---- List Group ---- */
+.list-group-item {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.list-group-item-action:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* ---- Seçili Item Göstergesi ---- */
+.selected-item-badge {
+    padding: 6px 0;
+}
+
+/* ---- Enchantment Satırı ---- */
+.enchantments-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.enchant-row select {
+    font-size: 0.85rem;
+}
+
+/* ---- Renk Butonları ---- */
+.color-buttons .color-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    min-width: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ---- Mesaj Şablonları ---- */
+#messageTemplates .list-group-item {
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+}
+
+/* ---- Modal Stilleri ---- */
+.modal-content {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* ---- Tablo Stilleri ---- */
+.table {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.table th {
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-color: var(--border-color);
+}
+
+/* ---- Yatay Ayırıcı ---- */
+hr {
+    border-color: var(--border-color);
+    opacity: 0.5;
+}
+
+/* ---- Toast Bildirimleri ---- */
+.toast {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.toast-header {
+    background-color: transparent;
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        z-index: 1000;
+        left: -220px;
+        top: 56px;
+        height: calc(100vh - 56px);
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.show {
+        left: 0;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .main-content {
+        width: 100%;
+    }
+}
+
+/* ---- Açık Tema Özelleştirmeleri ---- */
+[data-theme="light"] .navbar {
+    background-color: #fff !important;
+    border-bottom-color: #dee2e6 !important;
+}
+
+[data-theme="light"] .navbar-brand {
+    color: #212529 !important;
+}
+
+[data-theme="light"] .sidebar {
+    background-color: #f8f9fa !important;
+}
+
+[data-theme="light"] .sidebar .nav-link {
+    color: #6c757d;
+}
+
+[data-theme="light"] .sidebar .nav-link:hover,
+[data-theme="light"] .sidebar .nav-link.active {
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+[data-theme="light"] .card,
+[data-theme="light"] .card-header {
+    background-color: #fff;
+    color: #212529;
+}
+
+[data-theme="light"] .form-control,
+[data-theme="light"] .form-select {
+    background-color: #fff;
+    border-color: #dee2e6;
+    color: #212529;
+}
+
+[data-theme="light"] .log-console {
+    background-color: #f8f9fa;
+}
+
+[data-theme="light"] .list-group-item {
+    background-color: #fff;
+    color: #212529;
+}
+
+/* ---- Animasyonlar ---- */
+.tab-content.active {
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.player-item,
+.mute-item {
+    animation: slideIn 0.15s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-4px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* ---- Tooltip ---- */
+[title] {
+    cursor: help;
+}
+
+/* ---- Erişilebilirlik ---- */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* ---- Yükleme Animasyonu ---- */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* ---- Kod Etiketi ---- */
+code {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #ff79c6;
+}
+
+[data-theme="light"] code {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: #d63384;
+}

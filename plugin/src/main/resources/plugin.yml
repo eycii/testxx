@@ -1,0 +1,61 @@
+name: MCAdmin
+version: 1.0.0
+main: com.mcadmin.McAdminPlugin
+api-version: '1.20'
+description: Minecraft Paper sunucu yönetim plugin'i - WebSocket API ile masaüstü uygulamaya bağlanır
+authors:
+  - MCAdmin
+website: https://github.com/eycii/testxx
+
+# Plugin komutları
+commands:
+  mcadmin:
+    description: MCAdmin ana yönetim komutu
+    usage: /mcadmin [help|reload|generatetoken|status]
+    permission: mcadmin.use
+    aliases:
+      - mca
+  mute:
+    description: Oyuncuyu mute eder
+    usage: /mute <oyuncu> <süre> <sebep>
+    permission: mcadmin.mute
+  unmute:
+    description: Oyuncunun mute'unu kaldırır
+    usage: /unmute <oyuncu>
+    permission: mcadmin.mute
+  mutelist:
+    description: Mute'lu oyuncuları listeler
+    usage: /mutelist
+    permission: mcadmin.mute
+
+# Plugin yetkileri
+permissions:
+  mcadmin.use:
+    description: MCAdmin temel kullanım yetkisi
+    default: op
+
+  mcadmin.mute:
+    description: Oyuncu mute/unmute etme yetkisi
+    default: op
+
+  mcadmin.mute.bypass:
+    description: Mute'tan muafiyet yetkisi
+    default: op
+
+  mcadmin.items:
+    description: Oyuncuya item verme yetkisi
+    default: op
+
+  mcadmin.message:
+    description: Mesaj gönderme yetkisi
+    default: op
+
+  mcadmin.admin:
+    description: Tüm MCAdmin yetkileri (token oluşturma dahil)
+    default: op
+    children:
+      mcadmin.use: true
+      mcadmin.mute: true
+      mcadmin.mute.bypass: true
+      mcadmin.items: true
+      mcadmin.message: true

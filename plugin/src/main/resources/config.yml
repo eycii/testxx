@@ -1,0 +1,41 @@
+# MCAdmin Plugin Konfigürasyonu
+# ================================
+
+# WebSocket Ayarları
+websocket:
+  # WebSocket sunucusunu etkinleştir/devre dışı bırak
+  enabled: true
+  # Dinlenecek port (varsayılan: 8080)
+  port: 8080
+  # Dinlenecek IP adresi (0.0.0.0 = tüm ağ arayüzleri)
+  host: "0.0.0.0"
+
+# Güvenlik Ayarları
+security:
+  # Token listesi - Her token için kullanıcı adı ve yetkiler
+  # Yeni token eklemek için: /mcadmin generatetoken <kullanıcı_adı>
+  tokens:
+    - token: "example-token-change-me"
+      username: "Admin"
+      permissions:
+        - "admin"
+
+# Mute Ayarları
+mute:
+  # Mute verilerini dosyaya kaydet (yeniden başlatmada kalıcı)
+  save-to-file: true
+  # Süre belirtilmediğinde varsayılan mute süresi
+  default-duration: "1h"
+
+# Mesaj Formatları
+# & renk kodları desteklenir (&a=yeşil, &c=kırmızı, &e=sarı, &f=beyaz, &6=altın vb.)
+messages:
+  # Mute bildirimi (oyuncuya gösterilir)
+  # {reason} = mute sebebi
+  mute-message: "&cSusturuldunuz! Sebep: {reason}"
+
+  # Unmute bildirimi
+  unmute-message: "&aArtık konuşabilirsiniz!"
+
+  # Duyuru öneki
+  broadcast-prefix: "&6[DUYURU] &f"

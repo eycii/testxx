@@ -1,0 +1,41 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Node.js / Electron
+desktop-app/node_modules/
+desktop-app/dist/
+desktop-app/.electron-builder.yml
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V$
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local configuration (contains sensitive tokens)
+plugins/MCAdmin/config.yml
+plugins/MCAdmin/mutes.yml

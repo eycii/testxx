@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Güvenlik: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; script-src 'self' https://cdn.jsdelivr.net; img-src 'self' data:; connect-src ws: wss:;">
+    <title>Minecraft Admin Panel - Giriş</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <!-- Logo ve Başlık -->
+        <div class="login-header">
+            <div class="minecraft-logo">⛏️</div>
+            <h1 class="login-title">Minecraft Yönetim Paneli</h1>
+            <p class="login-subtitle">Sunucunuza güvenli bağlantı kurun</p>
+        </div>
+
+        <!-- Giriş Formu -->
+        <div class="login-card">
+            <form id="loginForm" novalidate>
+                <!-- Sunucu Adresi -->
+                <div class="mb-3">
+                    <label for="serverAddress" class="form-label">
+                        <i class="bi bi-hdd-network me-1"></i>Sunucu Adresi
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                        <input type="text"
+                               class="form-control"
+                               id="serverAddress"
+                               placeholder="127.0.0.1:8080"
+                               required>
+                    </div>
+                    <div class="form-text">IP adresi ve port numarası (örnek: 127.0.0.1:8080)</div>
+                </div>
+
+                <!-- Token -->
+                <div class="mb-3">
+                    <label for="token" class="form-label">
+                        <i class="bi bi-key me-1"></i>Token
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password"
+                               class="form-control"
+                               id="token"
+                               placeholder="Sunucu token'ınızı girin"
+                               required>
+                        <button class="btn btn-outline-secondary"
+                                type="button"
+                                id="togglePassword"
+                                title="Şifreyi göster/gizle">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">
+                        Token oluşturmak için sunucuda <code>/mcadmin generatetoken &lt;kullanıcı_adı&gt;</code> komutunu çalıştırın
+                    </div>
+                </div>
+
+                <!-- Beni Hatırla -->
+                <div class="mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Beni Hatırla (token kaydet)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bağlan Butonu -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg" id="connectBtn">
+                        <i class="bi bi-plug me-2"></i>Bağlan
+                    </button>
+                </div>
+
+                <!-- Durum Mesajı -->
+                <div id="statusMessage" class="status-message mt-3 d-none">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" id="statusSpinner"></div>
+                        <span id="statusText">Bağlantı bekleniyor...</span>
+                    </div>
+                </div>
+
+                <!-- Hata Mesajı -->
+                <div id="errorMessage" class="alert alert-danger mt-3 d-none" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="errorText"></span>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <p>MCAdmin Panel v1.0.0 | Paper 1.20.x</p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- WebSocket Bağlantı -->
+    <script src="js/connection.js"></script>
+    <!-- Utils -->
+    <script src="js/utils.js"></script>
+    <!-- Login Script -->
+    <script>
+        /**
+         * Giriş sayfası JavaScript kodu
+         */
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Kayıtlı ayarları yükle
+            try {
+                const settings = await window.electronAPI.loadSettings();
+
+                if (settings.serverAddress) {
+                    document.getElementById('serverAddress').value = settings.serverAddress;
+                }
+
+                if (settings.rememberToken) {
+                    document.getElementById('rememberMe').checked = true;
+                    if (settings.savedToken) {
+                        document.getElementById('token').value = settings.savedToken;
+                    }
+                }
+
+                // Tema uygula
+                document.body.setAttribute('data-theme', settings.theme || 'dark');
+            } catch (e) {
+                console.error('Ayarlar yüklenemedi:', e);
+            }
+
+            // Şifreyi göster/gizle butonu
+            document.getElementById('togglePassword').addEventListener('click', () => {
+                const tokenInput = document.getElementById('token');
+                const icon = document.querySelector('#togglePassword i');
+                if (tokenInput.type === 'password') {
+                    tokenInput.type = 'text';
+                    icon.className = 'bi bi-eye-slash';
+                } else {
+                    tokenInput.type = 'password';
+                    icon.className = 'bi bi-eye';
+                }
+            });
+
+            // Form gönderimi
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await handleConnect();
+            });
+        });
+
+        /**
+         * Bağlantı kurma işlemi
+         */
+        async function handleConnect() {
+            const address = document.getElementById('serverAddress').value.trim();
+            const token = document.getElementById('token').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const connectBtn = document.getElementById('connectBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Doğrulama
+            if (!address || !token) {
+                showError('Lütfen sunucu adresi ve token girin.');
+                return;
+            }
+
+            // Adres formatını kontrol et
+            if (!address.includes(':')) {
+                showError('Geçersiz adres formatı. Örnek: 127.0.0.1:8080');
+                return;
+            }
+
+            // UI'yi güncelle
+            connectBtn.disabled = true;
+            connectBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Bağlanıyor...';
+            statusMessage.classList.remove('d-none');
+            errorMessage.classList.add('d-none');
+            document.getElementById('statusText').textContent = 'Sunucuya bağlanıyor...';
+
+            // Ayarları kaydet
+            try {
+                await window.electronAPI.saveSettings({
+                    serverAddress: address,
+                    rememberToken: rememberMe,
+                    token: rememberMe ? token : ''
+                });
+            } catch (e) {
+                console.error('Ayarlar kaydedilemedi:', e);
+            }
+
+            // WebSocket bağlantısı kur
+            const [host, portStr] = address.split(':');
+            const port = parseInt(portStr, 10);
+
+            if (isNaN(port) || port < 1 || port > 65535) {
+                showError('Geçersiz port numarası.');
+                resetConnectBtn();
+                return;
+            }
+
+            // Bağlantı yöneticisi oluştur
+            window.serverConnection = new ServerConnection();
+
+            try {
+                await window.serverConnection.connect(host, port, token, {
+                    onStatusUpdate: (status) => {
+                        document.getElementById('statusText').textContent = status;
+                    },
+                    onSuccess: async () => {
+                        document.getElementById('statusText').textContent = 'Bağlantı başarılı! Yönlendiriliyor...';
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        await window.electronAPI.navigateToDashboard();
+                    },
+                    onError: (error) => {
+                        showError(error);
+                        resetConnectBtn();
+                    }
+                });
+            } catch (e) {
+                showError('Bağlantı kurulamadı: ' + e.message);
+                resetConnectBtn();
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const statusMessage = document.getElementById('statusMessage');
+            document.getElementById('errorText').textContent = message;
+            errorMessage.classList.remove('d-none');
+            statusMessage.classList.add('d-none');
+        }
+
+        function resetConnectBtn() {
+            const connectBtn = document.getElementById('connectBtn');
+            connectBtn.disabled = false;
+            connectBtn.innerHTML = '<i class="bi bi-plug me-2"></i>Bağlan';
+        }
+    </script>
+</body>
+</html>
