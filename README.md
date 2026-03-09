@@ -2,6 +2,27 @@
 
 Paper Minecraft sunucuları için **WebSocket tabanlı** tam özellikli yönetim sistemi. Masaüstü uygulaması üzerinden sunucunuzu kolayca yönetin.
 
+---
+
+## ⚡ Hızlı Başlangıç
+
+> **Kurulumu bilmiyorum, nereden başlayacağım?**
+>
+> 👉 **[KURULUM.md — Adım Adım Türkçe Kurulum Rehberi](KURULUM.md)**
+
+> **Hazır dosyaları indirmek istiyorum:**
+>
+> 👉 **[Son Sürümü İndir (Releases)](../../releases/latest)**
+>
+> | İndir | Ne işe yarar? |
+> |-------|---------------|
+> | `mcadmin-plugin-*.jar` | Minecraft sunucusuna yüklenen plugin |
+> | `...Setup...exe` | Windows masaüstü uygulaması |
+> | `....AppImage` | Linux masaüstü uygulaması |
+> | `....dmg` | macOS masaüstü uygulaması |
+
+---
+
 ## ✨ Özellikler
 
 ### 🔌 Paper Plugin

@@ -1,0 +1,213 @@
+name: 🚀 Build & Release
+
+# Her push'ta veya manüel tetiklemede çalışır
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:  # Manuel tetikleme
+
+permissions:
+  contents: write   # Release oluşturmak için gerekli
+
+jobs:
+  # ─────────────────────────────────────────────
+  # 1. Paper Plugin JAR Derleme
+  # ─────────────────────────────────────────────
+  build-plugin:
+    name: 🔧 Plugin Derle (Java/Maven)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu İndir
+        uses: actions/checkout@v4
+
+      - name: Java 17 Kur
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Maven ile Plugin Derle
+        working-directory: plugin
+        run: mvn clean package -B --no-transfer-progress
+
+      - name: Plugin JAR'ı Artifact Olarak Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcadmin-plugin-jar
+          path: plugin/target/mcadmin-plugin-*.jar
+          if-no-files-found: error
+
+  # ─────────────────────────────────────────────
+  # 2. Electron Masaüstü Uygulaması Derleme
+  # ─────────────────────────────────────────────
+  build-desktop-windows:
+    name: 🖥️ Masaüstü App (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Kodu İndir
+        uses: actions/checkout@v4
+
+      - name: Node.js 18 Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: desktop-app/package-lock.json
+
+      - name: Bağımlılıkları Yükle
+        working-directory: desktop-app
+        run: npm ci
+
+      - name: Windows İçin Derle (.exe)
+        working-directory: desktop-app
+        run: npm run build-win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Windows Artifact Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcadmin-windows
+          path: desktop-app/dist/*.exe
+          if-no-files-found: warn
+
+  build-desktop-linux:
+    name: 🐧 Masaüstü App (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu İndir
+        uses: actions/checkout@v4
+
+      - name: Node.js 18 Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: desktop-app/package-lock.json
+
+      - name: Bağımlılıkları Yükle
+        working-directory: desktop-app
+        run: npm ci
+
+      - name: Linux İçin Derle (AppImage)
+        working-directory: desktop-app
+        run: npm run build-linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Linux Artifact Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcadmin-linux
+          path: desktop-app/dist/*.AppImage
+          if-no-files-found: warn
+
+  build-desktop-mac:
+    name: 🍎 Masaüstü App (macOS)
+    runs-on: macos-latest
+
+    steps:
+      - name: Kodu İndir
+        uses: actions/checkout@v4
+
+      - name: Node.js 18 Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: desktop-app/package-lock.json
+
+      - name: Bağımlılıkları Yükle
+        working-directory: desktop-app
+        run: npm ci
+
+      - name: macOS İçin Derle (.dmg)
+        working-directory: desktop-app
+        run: npm run build-mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: macOS Artifact Yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcadmin-macos
+          path: desktop-app/dist/*.dmg
+          if-no-files-found: warn
+
+  # ─────────────────────────────────────────────
+  # 3. Release Oluştur (sadece 'v' tag push'larında)
+  # ─────────────────────────────────────────────
+  create-release:
+    name: 📦 GitHub Release Oluştur
+    needs: [build-plugin, build-desktop-windows, build-desktop-linux, build-desktop-mac]
+    runs-on: ubuntu-latest
+    # Sadece tag push'larında çalışır (örn: v1.0.0)
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Kodu İndir
+        uses: actions/checkout@v4
+
+      - name: Plugin Artifact İndir
+        uses: actions/download-artifact@v4
+        with:
+          name: mcadmin-plugin-jar
+          path: ./release-files/
+
+      - name: Windows Artifact İndir
+        uses: actions/download-artifact@v4
+        with:
+          name: mcadmin-windows
+          path: ./release-files/
+        continue-on-error: true
+
+      - name: Linux Artifact İndir
+        uses: actions/download-artifact@v4
+        with:
+          name: mcadmin-linux
+          path: ./release-files/
+        continue-on-error: true
+
+      - name: macOS Artifact İndir
+        uses: actions/download-artifact@v4
+        with:
+          name: mcadmin-macos
+          path: ./release-files/
+        continue-on-error: true
+
+      - name: GitHub Release Yayınla
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "MCAdmin ${{ github.ref_name }}"
+          body: |
+            ## 🎮 MCAdmin ${{ github.ref_name }} — Yeni Sürüm
+
+            ### 📥 İndirme
+
+            | Dosya | Açıklama |
+            |-------|----------|
+            | `mcadmin-plugin-*.jar` | **Paper Plugin** — Minecraft sunucusuna yükleyin |
+            | `Minecraft Admin Panel Setup *.exe` | **Windows Masaüstü Uygulaması** |
+            | `Minecraft Admin Panel-*.AppImage` | **Linux Masaüstü Uygulaması** |
+            | `Minecraft Admin Panel-*.dmg` | **macOS Masaüstü Uygulaması** |
+
+            ### 🚀 Hızlı Kurulum
+
+            1. **Plugin:** JAR dosyasını `plugins/` dizinine kopyalayın, sunucuyu başlatın
+            2. **Token:** `/mcadmin generatetoken AdminAdi` komutuyla token oluşturun
+            3. **Uygulama:** İşletim sisteminize uygun dosyayı indirip çalıştırın
+            4. **Bağlan:** Sunucu adresi ve token'ı girerek bağlanın
+
+            📖 Detaylı kurulum için: [KURULUM.md](https://github.com/${{ github.repository }}/blob/main/KURULUM.md)
+          files: ./release-files/*
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
